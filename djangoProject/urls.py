@@ -18,16 +18,10 @@ from django.urls import path
 from spotify_callback import views
 
 urlpatterns = [
-    # URL pattern for initiating Spotify authentication
+    path('', views.home_view, name='home'),
     path('spotify_top_tracks_artists/', views.spotify_top_tracks_artists, name='spotify_top_tracks_artists'),
-    # Add this line
-
     path('get_spotify_auth_url/', views.get_spotify_auth_url, name='get_spotify_auth_url'),
-
-    # URL pattern for handling Spotify callback
     path('spotify_callback/', views.spotify_callback, name='spotify_callback'),
-
     path('logout/', views.logout_view, name='logout'),
-
     path('home', views.home_view, name='home'),
 ]
