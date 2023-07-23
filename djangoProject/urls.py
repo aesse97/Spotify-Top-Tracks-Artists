@@ -1,27 +1,18 @@
-"""
-URL configuration for djangoProject project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.urls import path
-from spotify_callback import views
+from SpotifyApp.views import LogoutView
+from django.contrib import admin
+from django.views.generic.base import RedirectView
+from SpotifyApp.views import GetSpotifyAuthURLView, SpotifyCallbackView, LogoutView, HomeView, SpotifyTopTracksView, SpotifyTopTracksLongTermView, SpotifyTopTracksMediumTermView, SpotifyCreatePlaylistView
 
 urlpatterns = [
-    path('', views.home_view, name='home'),
-    path('spotify_top_tracks_artists/', views.spotify_top_tracks_artists, name='spotify_top_tracks_artists'),
-    path('get_spotify_auth_url/', views.get_spotify_auth_url, name='get_spotify_auth_url'),
-    path('spotify_callback/', views.spotify_callback, name='spotify_callback'),
-    path('logout/', views.logout_view, name='logout'),
-    path('home', views.home_view, name='home'),
+    path('', RedirectView.as_view(url='home/')),
+    path('admin/', admin.site.urls),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('home/', HomeView.as_view(), name='home'),
+    path('top_tracks/', SpotifyTopTracksView.as_view(), name='spotify_top_tracks'),
+    path('top_tracks_long_term/', SpotifyTopTracksLongTermView.as_view(), name='spotify_top_tracks_long_term'),
+    path('top_tracks_medium_term/', SpotifyTopTracksMediumTermView.as_view(), name='spotify_top_tracks_medium_term'),
+    path('get_spotify_auth_url/', GetSpotifyAuthURLView.as_view(), name='get_spotify_auth_url'),
+    path('spotify_callback/', SpotifyCallbackView.as_view(), name='spotify_callback'),
+    path('create_playlist/<str:time_range>/', SpotifyCreatePlaylistView.as_view(), name='create_playlist'),
 ]

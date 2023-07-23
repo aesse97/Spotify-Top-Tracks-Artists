@@ -1,4 +1,9 @@
 Django>=4.2.3
-gunicorn
-requests
-spotipy
+gunicorn==21.2.0
+requests==2.31.0
+spotipy==2.23.0
+django-heroku==0.3.1
+dj-database-url==2.0.0
+jwt==1.3.1
+python-dotenv==1.0.0
+whitenoise==6.5.0

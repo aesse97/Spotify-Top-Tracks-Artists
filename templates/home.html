@@ -1,16 +1,259 @@
-<!-- home.html -->
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to My App</title>
+    <title>Welcome to Your Spotify Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+            transform: translateY(-25px);
+        }
+
+        .carousel-item img {
+             height: 100vh;
+             width: 200vw;
+             object-fit: contain;
+             transform: translateY(-80px);
+        }
+        #carouselExampleIndicators {
+            width: 200%;
+            margin: 0 auto;
+        }
+        .carousel-caption {
+            bottom: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            transform: translateY(-160px);
+            width: 100%;
+            left: 0;
+            right: 0;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .carousel-fade {
+
+        }
+        .bg-image {
+            background-image: url("{{ track.image_url }}");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        h1 {
+            text-align: center;
+            color: #1DB954;
+            font-size: 35px;
+            margin-top: 50px;
+            transform: translateY(20px);
+        }
+
+
+
+        a {
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .spotify-logo {
+            color: #1DB954;
+            font-size: 60px;
+            margin-right: 10px;
+            vertical-align: middle;
+
+            .popular-songs {
+                margin-top: 40px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .song-card {
+                width: 150px;
+                height: 150px;
+                margin: 10px;
+                overflow: hidden;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+            }
+
+            .song-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        }
+    </style>
+    <style>
+        .button-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 400px;
+    margin: 70px auto 0;
+}
+
+.btn-view-tracks,
+.btn-view-medium-tracks {
+    flex: 1;
+    background-color: #1DB954;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.btn-view-medium-tracks {
+    margin-left: 10px;
+}
+
+/* Animation on hover */
+        .btn-view-tracks:hover,
+        .btn-view-medium-tracks:hover {
+            background-color: #198743;
+}
+
+        </style>
+    <style>
+        .playlist-tracks {
+            margin-top: 450px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow: show;
+            align-items: center;
+            max-height: 600px;
+        }
+
+        .track-card {
+            width: 600px;
+            height: 600px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: absolute;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        .track-card img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .track-card.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        p {
+            text-align: center;
+            font-size: 25px;
+            color: #ffffff;
+            margin-top: 450px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to My App</h1>
-    <p>
-        You are currently not authenticated or your session has expired.
-        Please <a href="{% url 'get_spotify_auth_url' %}">reauthenticate with Spotify</a>
-        and come back later.
-    </p>
+    <div class="container">
+        <h1 class="text-center text-light my-4"><i class="fab fa-spotify spotify-logo"></i> Welcome to Your Spotify Dashboard</h1>
+
+        <div class="row justify-content-center">
+            <a href="{% url 'spotify_top_tracks_long_term' %}" class="btn btn-lg btn-light m-2">View Top Tracks & Artists From Beginning of Time</a>
+            <a href="{% url 'spotify_top_tracks_medium_term' %}" class="btn btn-lg btn-light m-2">View Top Tracks & Artists From Last 6 Months</a>
+        </div>
+
+        <div class="row justify-content-center">
+                <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for track in playlist_tracks %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ track.image_url }}" class="d-block w-100" alt="{{ track.name }}">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>{{ track.name }}</h5>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        {% if messages %}
+            $('#messageModal').modal('show');
+        {% endif %}
+    });
+</script>
+
+<script>
+    function switchTrackCards() {
+        const trackCards = document.querySelectorAll('.track-card');
+        const numTrackCards = trackCards.length;
+        let currentTrackIndex = Math.floor(Math.random() * numTrackCards);
+
+        setInterval(() => {
+            trackCards[currentTrackIndex].classList.remove('active');
+            currentTrackIndex = (currentTrackIndex + 1) % numTrackCards;
+            trackCards[currentTrackIndex].classList.add('active');
+        }, 5000);
+    }
+
+    switchTrackCards();
+</script>
+
+<p>If you do not like this, I really do not care, use it anyway.
+</p>
+<p>Also this was made by Drew</p>
+    </div>
 </body>
 </html>
+
